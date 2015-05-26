@@ -19,7 +19,7 @@ class Article extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['title', 'body', 'published_at', 'status'];
+	protected $fillable = ['title', 'body', 'published_at', 'status', 'user_id'];
 
 	public function user() 
 	{

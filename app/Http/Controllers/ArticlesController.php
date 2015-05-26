@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\User;
 use App\Article;
 use App\Tag;
 use Carbon\Carbon;
@@ -28,8 +29,9 @@ class ArticlesController extends Controller {
 	 */
 	public function create()
 	{
+		$users = User::orderBy('name', 'ASC')->lists('name', 'id');
 		$tags = Tag::lists('name', 'id');
-		return view('articles.create', compact('tags'));
+		return view('articles.create', compact('tags', 'users'));
 	}
 
 	/**
@@ -56,8 +58,7 @@ class ArticlesController extends Controller {
 			}
 			$article->tags()->sync($currentTags);
 		}
-	
-		return redirect('articles');
+		return redirect('home/articles');
 	}
 
 	/**
@@ -80,10 +81,9 @@ class ArticlesController extends Controller {
 	public function edit($id)
 	{
 		$article = Article::find($id);
-
 		$tags = Tag::lists('name', 'id');
-	
-		return view('articles.edit', compact('article', 'tags'));
+		$users = User::orderBy('name', 'ASC')->lists('name', 'id');
+		return view('articles.edit', compact('article', 'tags', 'users'));
 	}
 
 	public function update(UpdateArticle $request, $id)
@@ -94,10 +94,18 @@ class ArticlesController extends Controller {
 		if($request->input('tag_list') == null) {
 			$article->tags()->sync([]);
 		} else {
-			$article->tags()->sync($request->input('tag_list'));
+			$currentTags = array_filter($request->input('tag_list'), 'is_numeric');
+			$newTags = array_diff($request->input('tag_list'), $currentTags);	
+			foreach($newTags as $newTag)
+			{
+				if($tag = Tag::create(['name' => $newTag]))
+				{
+					$currentTags[] = $tag->id;
+				}
+			}
+			$article->tags()->sync($currentTags);
 		}
-		
-		return redirect()->route('articles.show', [$article->id]);
+		return redirect()->route('home.articles.show', [$article->id]);
 	}
 
 	public function activate($id)
@@ -105,7 +113,7 @@ class ArticlesController extends Controller {
 		$article = Article::find($id);
 		$article->status = 1;
 		$article->save();
-		return redirect('articles');
+		return redirect('home/articles');
 	}
 
 	public function deactivate($id)
@@ -113,7 +121,7 @@ class ArticlesController extends Controller {
    		$article = Article::find($id);
    		$article->status = 0;
 		$article->save();
-      	return redirect('articles');
+      	return redirect('home/articles');
    	}
 
 }

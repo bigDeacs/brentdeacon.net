@@ -1,4 +1,4 @@
-@extends('app')
+@extends('admin.app')
 
 @section('content')
 <div class="container-fluid">
@@ -39,7 +39,7 @@
 							<div class="col-md-6 col-md-offset-4">
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="remember"> Remember Me
+										<input type="checkbox" name="remember"> Keep Me Logged In
 									</label>
 								</div>
 							</div>

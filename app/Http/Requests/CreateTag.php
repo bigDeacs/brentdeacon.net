@@ -22,7 +22,7 @@ class CreateCategory extends Request {
 	public function rules()
 	{
 		return [
-			'name' 	=> 'required|unique:categories'
+			'name' 	=> 'required|unique:tags'
 		];
 	}
 

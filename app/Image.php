@@ -16,10 +16,20 @@ class Image extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'file', 'status'];
+	protected $fillable = ['name', 'file', 'product', 'description', 'label_id', 'status'];
 
 	public function products() {
 		return $this->belongsToMany('App\Product');
 	}
+
+	public function rank()
+    {
+        return $this->morphMany('App\Ranking', 'rankable');
+    }
+
+	public function label()
+    {
+        return $this->belongsTo('App\Label');
+    }
 
 }

@@ -16,7 +16,7 @@ class Product extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'description', 'url', 'type_id', 'category_id', 'link', 'status', 'meta', 'head', 'scripts'];
+	protected $fillable = ['name', 'description', 'features', 'options', 'url', 'type_id', 'category_id', 'brochure_id', 'video', 'status', 'meta', 'head', 'scripts'];
 
 	public function images() {
 		return $this->belongsToMany('App\Image');
@@ -31,5 +31,30 @@ class Product extends Model {
     {
         return $this->belongsTo('App\Category');
     }
+
+    public function colours() 
+	{
+		return $this->belongsToMany('App\Colour');
+	}
+
+    public function brochure()
+    {
+        return $this->belongsTo('App\Brochure');
+    }
+
+    public function offers()
+    {
+        return $this->hasMany('App\Offer');
+    }
+
+    public function rank()
+    {
+        return $this->morphMany('App\Ranking', 'rankable');
+    }
+
+    public function getColourListAttribute()
+	{
+		return $this->colours->lists('id');
+	}
 
 }
